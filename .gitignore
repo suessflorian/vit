@@ -1,0 +1,6 @@
+data/*
+checkpoint/*
+
+**/.terraform/*
+*.tfstate
+*.tfstate.*
