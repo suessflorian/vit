@@ -6,6 +6,7 @@ import data
 import os
 import csv
 import upload
+import models
 
 # NOTE: only nessecary for CUDA devices
 from torch.cuda.amp import GradScaler, autocast
@@ -20,7 +21,6 @@ parser.add_argument("--lr", type=float, default=0.001, help="learning rate")
 parser.add_argument("--device", type=str, default="cpu", help="device to lay tensor work over")
 parser.add_argument("--gcs", action="store_true", help="if model checkpoints should be pushed to gcs")
 
-CIFAR_100_CLASSES = 100
 MODEL_NAME = "vit_b_16"
 
 def evaluate(
@@ -59,16 +59,10 @@ def evaluate(
 def main():
     args = parser.parse_args()
 
-    weights = torchvision.models.ViT_B_16_Weights.DEFAULT
-    model = torchvision.models.vit_b_16(weights=weights)
-    # honed for classes of the CIFAR100 dataset
-    model.heads = torch.nn.Sequential(torch.nn.Linear(model.hidden_dim, CIFAR_100_CLASSES))
-
-    preprocess = weights.transforms()
-
-    loaded, loadedModel, metadata = checkpoint.load(model, name=MODEL_NAME, gcs=args.gcs)
+    model, preprocess = models.transformer()
+    loaded, checkpointed, metadata = checkpoint.load(model, name=MODEL_NAME, gcs=args.gcs)
     if loaded:
-        model = loadedModel
+        model = checkpointed
 
 
     freeze = [
