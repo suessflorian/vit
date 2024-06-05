@@ -1,6 +1,5 @@
 import argparse
 import torch
-import torchvision
 import checkpoint
 import data
 import os
