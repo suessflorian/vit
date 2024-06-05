@@ -8,6 +8,9 @@ torch = "*"
 torchvision = "*"
 google-cloud-storage = "*"
 tqdm = "*"
+jupyterlab = "*"
+pandas = "*"
+matplotlib = "*"
 
 [dev-packages]
 
